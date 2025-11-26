@@ -7,7 +7,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 // Modules
@@ -16,10 +15,11 @@ import { UserModule } from './modules/user/user.module';
 
 // Mongoose
 import { MongooseModule } from '@nestjs/mongoose';
-import { ProfileModule } from './profile/profile.module';
+import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({isGlobal:true}),
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
@@ -34,10 +34,10 @@ import { ProfileModule } from './profile/profile.module';
           auth: {
             user: configService.get<string>('MAILER_USER'),
             pass: configService.get<string>('MAILER_PASS'),
-          }
+          },
         },
         template: {
-          dir: join(__dirname,'../','src', 'templates'),
+          dir: join(__dirname, '../', 'src', 'templates'),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
@@ -47,7 +47,7 @@ import { ProfileModule } from './profile/profile.module';
     }),
     AuthModule,
     UserModule,
-    ProfileModule
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
