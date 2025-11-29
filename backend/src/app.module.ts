@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
-import { JwtModule } from '@nestjs/jwt';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -16,6 +15,7 @@ import { UserModule } from './modules/user/user.module';
 // Mongoose
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProfileModule } from './modules/profile/profile.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -48,6 +48,7 @@ import { ProfileModule } from './modules/profile/profile.module';
     AuthModule,
     UserModule,
     ProfileModule,
+    CommonModule
   ],
   controllers: [AppController],
   providers: [AppService],
