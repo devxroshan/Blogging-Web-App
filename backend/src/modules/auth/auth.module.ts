@@ -10,20 +10,12 @@ import { AuthService } from './auth.service';
 // Modules
 import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
   imports: [
     UserModule,
-    JwtModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: {
-          expiresIn: 30 * 24 * 60 * 60, // 30 days
-          algorithm: 'HS256',
-        },
-      }),
-    }),
+    CommonModule
   ],
   controllers: [AuthController],
   providers: [AuthService],

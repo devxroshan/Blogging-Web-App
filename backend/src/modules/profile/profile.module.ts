@@ -8,10 +8,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 // Schema
 import { ProfileSchema, Profile } from './schema/profile.schema';
+import { UserModule } from '../user/user.module';
+import { GuardModule } from 'src/common/guards/guards.module';
 
 @Module({
   imports: [
     CommonModule,
+    UserModule,
+    GuardModule,
     MongooseModule.forFeature([{ name: Profile.name, schema: ProfileSchema }]),
   ],
   controllers: [ProfileController],

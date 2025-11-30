@@ -26,29 +26,9 @@ import { CommonModule } from './common/common.module';
         uri: configService.get<string>('MONGODB_URL'),
       }),
     }),
-    MailerModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        transport: {
-          service: 'gmail',
-          auth: {
-            user: configService.get<string>('MAILER_USER'),
-            pass: configService.get<string>('MAILER_PASS'),
-          },
-        },
-        template: {
-          dir: join(__dirname, '../', 'src', 'templates'),
-          adapter: new HandlebarsAdapter(),
-          options: {
-            strict: true,
-          },
-        },
-      }),
-    }),
     AuthModule,
     UserModule,
     ProfileModule,
-    CommonModule
   ],
   controllers: [AppController],
   providers: [AppService],
