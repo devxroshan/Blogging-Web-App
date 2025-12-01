@@ -12,8 +12,8 @@ export class CommentController {
     constructor(private readonly commentService:CommentService){}
 
     @Post(':blogId')
-    async CreateComment(@Req() req:express.Request,@Param('blogId') blogId:string, @Body() createCommentDto:CreateCommentDto):Promise<SuccessResponse<CommentDocument>>{
-        const newComment = await this.commentService.createComment(req.user.id, blogId, createCommentDto)
+    async CreateComment(@Req() req:express.Request,@Param('blogId') blogId:string,@Body() createCommentDto:CreateCommentDto, @Query('repliedOn') repliedOn?:string):Promise<SuccessResponse<CommentDocument>>{
+        const newComment = await this.commentService.createComment(req.user.id, blogId, createCommentDto, repliedOn)
         return {
             ok: true,
             msg: 'Comment posted successfully.',

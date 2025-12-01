@@ -12,8 +12,11 @@ export class Comment {
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
     author: MongooseSchema.Types.ObjectId;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Blog', required: true })
+    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Blog' , required: true })
     blogId: MongooseSchema.Types.ObjectId;
+
+    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Comment', default: null})
+    repliedOn: MongooseSchema.Types.ObjectId;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

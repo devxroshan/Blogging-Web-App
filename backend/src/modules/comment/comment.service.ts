@@ -24,10 +24,18 @@ export class CommentService {
     authorId: string,
     blogId: string,
     createCommentDto: CreateCommentDto,
+    repliedOn?: string,
   ): Promise<CommentDocument> {
     if (!isValidObjectId(authorId) || !isValidObjectId(blogId)) {
       throw new BadRequestException({
-        msg: 'Invalid Authro ID or Blog ID.',
+        msg: 'Invalid Author ID or Blog ID.',
+        code: 'INVALID_ID',
+      });
+    }
+
+    if (repliedOn && !isValidObjectId(repliedOn)) {
+      throw new BadRequestException({
+        msg: 'Invalid REPLIED_ON ID.',
         code: 'INVALID_ID',
       });
     }
@@ -45,6 +53,7 @@ export class CommentService {
         author: new Types.ObjectId(authorId),
         blogId: new Types.ObjectId(blogId),
         content: createCommentDto.content,
+        repliedOn: repliedOn?new Types.ObjectId(repliedOn):null
       });
 
       return newComment;
@@ -116,9 +125,16 @@ export class CommentService {
 
     try {
       const isDeleted = await this.commentModel
-        .deleteOne({
-          author: new Types.ObjectId(authorId),
-          _id: new Types.ObjectId(commentId),
+        .deleteMany({
+          $or: [
+            {
+              author: new Types.ObjectId(authorId),
+              _id: new Types.ObjectId(commentId)
+            },
+            {
+              repliedOn: new Types.ObjectId(commentId)
+            }
+          ]
         })
         .exec();
 
