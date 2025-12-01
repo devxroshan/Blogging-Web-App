@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 
 // Modules
 import { MongooseModule } from '@nestjs/mongoose';
@@ -14,6 +14,7 @@ import { BlogService } from './blog.service';
 import { BlogSchema, Blog } from './schema/blog.schema';
 import { CommonModule } from 'src/common/common.module';
 import { UserModule } from '../user/user.module';
+import { CommentModule } from '../comment/comment.module';
 
 
 
@@ -22,6 +23,7 @@ import { UserModule } from '../user/user.module';
     CommonModule,
     GuardModule,
     UserModule,
+    forwardRef(() => CommentModule),
     MongooseModule.forFeature([
       {
         name: Blog.name,
