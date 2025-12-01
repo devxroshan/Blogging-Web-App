@@ -22,6 +22,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const errorRes = exception.getResponse();
 
     const error = errorRes as {
+      name?: string;
       code?: string;
       msg?: string;
       details?: any;

@@ -15,7 +15,7 @@ import { UserModule } from './modules/user/user.module';
 // Mongoose
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProfileModule } from './modules/profile/profile.module';
-import { CommonModule } from './common/common.module';
+import { BlogModule } from './modules/blog/blog.module';
 
 @Module({
   imports: [
@@ -29,6 +29,7 @@ import { CommonModule } from './common/common.module';
     AuthModule,
     UserModule,
     ProfileModule,
+    BlogModule
   ],
   controllers: [AppController],
   providers: [AppService],
