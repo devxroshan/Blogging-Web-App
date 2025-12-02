@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { ActivityController } from './activity.controller';
 import { CommonModule } from 'src/common/common.module';
@@ -15,7 +15,7 @@ import { Archive, ArchiveSchema } from './schema/archive.schema';
     CommonModule,
     GuardModule,
     UserModule,
-    BlogModule,
+    forwardRef(() => BlogModule),
     MongooseModule.forFeature([
       {
         name: Like.name,
@@ -33,6 +33,6 @@ import { Archive, ArchiveSchema } from './schema/archive.schema';
   ],
   controllers: [ActivityController],
   providers: [ActivityService],
-  exports: []
+  exports: [MongooseModule]
 })
 export class ActivityModule {}

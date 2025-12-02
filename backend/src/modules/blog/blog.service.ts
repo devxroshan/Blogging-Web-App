@@ -17,6 +17,9 @@ import { CreateBlogDto } from './dto/create-blog.dto';
 import { UserDocument, User } from '../user/schema/user.schema';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { Comment, CommentDocument } from '../comment/schema/comment.schema';
+import { Like, LikeDocument } from '../activity/schema/like.schema';
+import { Save, SaveDocument } from '../activity/schema/save.schema';
+import { ArchiveDocument, Archive } from '../activity/schema/archive.schema';
 
 @Injectable()
 export class BlogService {
@@ -24,6 +27,9 @@ export class BlogService {
     @InjectModel(Blog.name) private blogModel: Model<BlogDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
+    @InjectModel(Like.name) private likeModel: Model<LikeDocument>,
+    @InjectModel(Save.name) private saveModel: Model<SaveDocument>,
+    @InjectModel(Archive.name) private archiveModel: Model<ArchiveDocument>,
     private configService: ConfigService,
   ) {}
 
@@ -164,20 +170,23 @@ export class BlogService {
         })
         .exec();
 
-      const isCommentDeleted = await this.commentModel.deleteMany({
+      await this.commentModel.deleteMany({
         blogId: new Types.ObjectId(blogId),
-      });
+      }).exec();
+
+      await this.likeModel.deleteMany({
+        blogId: new Types.ObjectId(blogId)
+      })
+      await this.saveModel.deleteMany({
+        blogId: new Types.ObjectId(blogId)
+      })
+      await this.archiveModel.deleteMany({
+        blogId: new Types.ObjectId(blogId)
+      })
 
       if (!isDeleted) {
         throw new NotFoundException({
           msg: 'Blog not found.',
-          code: 'NOT_FOUND',
-        });
-      }
-
-      if (isCommentDeleted.deletedCount <= 0) {
-        throw new NotFoundException({
-          msg: 'comments not found.',
           code: 'NOT_FOUND',
         });
       }

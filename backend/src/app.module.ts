@@ -14,7 +14,7 @@ import { UserModule } from './modules/user/user.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { BlogModule } from './modules/blog/blog.module';
 import { CommentModule } from './modules/comment/comment.module';
-import { ActivityModule } from './modules/like/activity.module';
+import { ActivityModule } from './modules/activity/activity.module';
 
 // Mongoose
 import { MongooseModule } from '@nestjs/mongoose';

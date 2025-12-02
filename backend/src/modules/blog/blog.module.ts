@@ -15,6 +15,7 @@ import { BlogSchema, Blog } from './schema/blog.schema';
 import { CommonModule } from 'src/common/common.module';
 import { UserModule } from '../user/user.module';
 import { CommentModule } from '../comment/comment.module';
+import { ActivityModule } from '../activity/activity.module';
 
 
 
@@ -24,6 +25,7 @@ import { CommentModule } from '../comment/comment.module';
     GuardModule,
     UserModule,
     forwardRef(() => CommentModule),
+    forwardRef(() => ActivityModule),
     MongooseModule.forFeature([
       {
         name: Blog.name,
