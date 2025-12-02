@@ -11,12 +11,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 // Modules
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
-
-// Mongoose
-import { MongooseModule } from '@nestjs/mongoose';
 import { ProfileModule } from './modules/profile/profile.module';
 import { BlogModule } from './modules/blog/blog.module';
 import { CommentModule } from './modules/comment/comment.module';
+import { ActivityModule } from './modules/like/activity.module';
+
+// Mongoose
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CommentModule } from './modules/comment/comment.module';
     ProfileModule,
     BlogModule,
     CommentModule,
+    ActivityModule
   ],
   controllers: [AppController],
   providers: [AppService],
