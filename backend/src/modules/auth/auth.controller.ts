@@ -39,7 +39,7 @@ export class AuthController {
                 sameSite: 'none',
             }
         ).json({
-            oK:true,
+            ok:true,
             msg: 'Login successful',
             data: this.configService.get<string>('NODE_ENV') === Environment.DEV ? response.data?.token : {},
         });
