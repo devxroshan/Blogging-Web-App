@@ -1,2 +1,14 @@
 @import "tailwindcss";
 
+:root {
+    --primary-border: #3a3a3a36;
+}
+
+@theme {
+    --color-primary-border: var(--primary-border)
+}
+
+
+body {
+    
+}
