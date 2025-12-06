@@ -11,7 +11,12 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  app.enableCors();
+  app.enableCors({
+    origin: ['http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    credentials: true,
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -28,13 +33,13 @@ async function bootstrap() {
           msg: 'Validation failed',
           code: 'VALIDATION_ERROR',
           details,
-        })
+        });
       },
     }),
   );
 
   app.use(helmet());
-  app.use(cookieParser())
+  app.use(cookieParser());
   app.useGlobalFilters(new AllExceptionsFilter(configService));
 
   await app.listen(process.env.PORT ?? 8000);

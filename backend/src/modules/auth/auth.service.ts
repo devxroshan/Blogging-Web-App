@@ -122,12 +122,7 @@ export class AuthService {
     loginAuthDto: LoginAuthDto,
   ): Promise<SuccessResponse<{ token: string }>> {
     try {
-      const user = await this.userModel.findOne({
-        $or: [
-          { username: loginAuthDto.usernameOrEmail },
-          { email: loginAuthDto.usernameOrEmail },
-        ],
-      });
+      const user = await this.userModel.findOne({username: loginAuthDto.usernameOrEmail}) || await this.userModel.findOne({email: loginAuthDto.usernameOrEmail})
 
       if (!user) {
         throw new BadRequestException({
