@@ -132,10 +132,169 @@ export class ActivityService {
           blogId: new Types.ObjectId(blogId)
         })
 
+        await this.blogModel.findByIdAndUpdate(blogId, {
+          $set:{
+            isArchive: true
+          }
+        })
+
         return true;
+      }else {
+        await this.blogModel.findByIdAndUpdate(blogId, {
+          $set: {
+            isArchive: false
+          }
+        })
       }
       
       return false;
+    } catch (error) {
+      if(error instanceof BadRequestException || error instanceof NotFoundException) throw error;
+
+      throw new InternalServerErrorException({
+        msg: 'Internal Server Error.',
+        code: 'INTERNAL_SERVER_ERROR',
+        error
+      })
+    }
+  }
+
+  async viewBlog(blogId: string):Promise<boolean>{
+    if(!isValidObjectId(blogId)){
+      throw new BadRequestException({
+        msg: 'Invalid Author or Blog ID.',
+        code: 'INVALID_ID'
+      })
+    }
+
+    try {
+      const isBlog = await this.blogModel.exists({_id: blogId})
+
+      if(!isBlog){
+        throw new NotFoundException({
+          msg: 'Blog not found.',
+          code: 'NOT_FOUND'
+        })
+      }
+
+      await this.blogModel.findByIdAndUpdate(blogId, {
+        $inc: {
+          views: 1
+        }
+      })
+
+      return true;
+    } catch (error) {
+      if(error instanceof BadRequestException || error instanceof NotFoundException) throw error;
+
+      throw new InternalServerErrorException({
+        msg: 'Internal Server Error.',
+        code: 'INTERNAL_SERVER_ERROR',
+        error
+      })
+    }
+  }
+  
+  async getLikedBlogs(userId:string):Promise<BlogDocument[]>{
+    if(!isValidObjectId(userId)){
+      throw new BadRequestException({
+        msg: 'Invalid Author ID.',
+        code: 'INVALID_ID'
+      })
+    }
+
+    try {
+      let blogs:BlogDocument[] = [];
+
+      const likes = await this.likeModel.find({
+        author: userId
+      })
+
+      if(likes.length <= 0) throw new NotFoundException({
+        msg: "No liked blogs yet.",
+        code: 'NOT_FOUND'
+      })
+
+      await Promise.all(likes.map(async (like) => {
+        const blog = await this.blogModel.findById(like.blogId)
+        blogs.push(blog as BlogDocument);
+      }))
+
+      return blogs;
+    } catch (error) {
+      if(error instanceof BadRequestException || error instanceof NotFoundException) throw error;
+
+      throw new InternalServerErrorException({
+        msg: 'Internal Server Error.',
+        code: 'INTERNAL_SERVER_ERROR',
+        error
+      })
+    }
+  }
+
+  async getSavedBlogs(userId:string):Promise<BlogDocument[]>{
+    if(!isValidObjectId(userId)){
+      throw new BadRequestException({
+        msg: 'Invalid Author ID.',
+        code: 'INVALID_ID'
+      })
+    }
+
+    try {
+      let blogs:BlogDocument[] = [];
+
+      const saved = await this.saveModel.find({
+        author: userId
+      })
+
+      if(saved.length <= 0) throw new NotFoundException({
+        msg: "No saved blogs yet.",
+        code: 'NOT_FOUND'
+      })
+
+      await Promise.all(saved.map(async (save) => {
+        const blog = await this.blogModel.findById(save.blogId)
+        blogs.push(blog as BlogDocument);
+      }))
+
+      return blogs;
+    } catch (error) {
+      if(error instanceof BadRequestException || error instanceof NotFoundException) throw error;
+
+      throw new InternalServerErrorException({
+        msg: 'Internal Server Error.',
+        code: 'INTERNAL_SERVER_ERROR',
+        error
+      })
+    }
+  }
+
+  async getArchiveBlogs(userId:string):Promise<BlogDocument[]>{
+    if(!isValidObjectId(userId)){
+      throw new BadRequestException({
+        msg: 'Invalid Author ID.',
+        code: 'INVALID_ID'
+      })
+    }
+
+    try {
+      let blogs:BlogDocument[] = [];
+
+      const archives = await this.archiveModel.find({
+        author: userId
+      })
+
+      if(archives.length <= 0) throw new NotFoundException({
+        msg: "No archive blogs yet.",
+        code: 'NOT_FOUND'
+      })
+
+      await Promise.all(archives.map(async (archive) => {
+        const blog = await this.blogModel.findById(archive.blogId)
+        blogs.push(blog as BlogDocument);
+      }))
+
+      return blogs;
     } catch (error) {
       if(error instanceof BadRequestException || error instanceof NotFoundException) throw error;
 

@@ -76,6 +76,7 @@ export class BlogService {
 
       const blogs: BlogDocument[] = await this.blogModel.find({
         author: user._id,
+        isArchive: false
       });
 
       if (blogs.length <= 0) {

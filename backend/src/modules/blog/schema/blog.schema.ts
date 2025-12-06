@@ -29,6 +29,10 @@ export class Blog {
     category: string;
     @Prop({default: ''})
     blogImg: string;
+    @Prop({type: Boolean, default: false})
+    isArchive: boolean
+    @Prop({type: Number})
+    views: number
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);
