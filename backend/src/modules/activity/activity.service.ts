@@ -7,7 +7,7 @@ import { Save, SaveDocument } from './schema/save.schema';
 import { Archive, ArchiveDocument } from './schema/archive.schema';
 import { WsService } from 'src/web-socket/web-socket.service';
 import { User, UserDocument } from '../user/schema/user.schema';
-import { NotificationDocument, TNotification } from './schema/notification.schema';
+import { NotificationDocument, TNotification, Notification } from './schema/notification.schema';
 
 @Injectable()
 export class ActivityService {
