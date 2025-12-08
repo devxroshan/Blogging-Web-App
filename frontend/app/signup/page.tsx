@@ -21,7 +21,7 @@ const SignUp = () => {
     email: "",
     password: "",
   });
-  const [isSignedUp, setIsSignedUp] = useState<boolean>(true);
+  const [isSignedUp, setIsSignedUp] = useState<boolean>(false);
 
   // Mutations
   const signUpMutatiton = useMutation({
