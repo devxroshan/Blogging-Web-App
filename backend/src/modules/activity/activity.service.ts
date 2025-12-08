@@ -5,6 +5,9 @@ import { isValidObjectId, Model, Types } from 'mongoose';
 import { Blog, BlogDocument } from '../blog/schema/blog.schema';
 import { Save, SaveDocument } from './schema/save.schema';
 import { Archive, ArchiveDocument } from './schema/archive.schema';
+import { WsService } from 'src/web-socket/web-socket.service';
+import { User, UserDocument } from '../user/schema/user.schema';
+import { NotificationDocument, TNotification } from './schema/notification.schema';
 
 @Injectable()
 export class ActivityService {
@@ -13,6 +16,9 @@ export class ActivityService {
     @InjectModel(Blog.name) private readonly blogModel: Model<BlogDocument>,
     @InjectModel(Save.name) private readonly saveModel: Model<SaveDocument>,
     @InjectModel(Archive.name) private readonly archiveModel: Model<ArchiveDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(Notification.name) private readonly notificationModel: Model<NotificationDocument>,
+    private readonly wsService: WsService
   ) {}
 
   async createLike(authorId: string, blogId: string):Promise<boolean>{
@@ -24,7 +30,7 @@ export class ActivityService {
     }
 
     try {
-      const isBlog = await this.blogModel.exists({_id: blogId})
+      const isBlog = await this.blogModel.findById(blogId)
 
       if(!isBlog){
         throw new NotFoundException({
@@ -33,10 +39,25 @@ export class ActivityService {
         })
       }
 
+      const activityUser = await this.userModel.findById(authorId)
+
       const isAlreadyLiked = await this.likeModel.deleteOne({
         author: authorId,
         blogId
       }).exec()
+
+      if(!isAlreadyLiked && authorId != isBlog.author.toString()){
+        this.wsService.emitToUser(`user:${isBlog.author}`, 'newNotification', {
+          likedBy: activityUser?.username,
+          blog: isBlog
+        })
+
+        await this.notificationModel.create({
+          author: new Types.ObjectId(isBlog.author),
+          likedBy: new Types.ObjectId(authorId),
+          blogId: new Types.ObjectId(blogId)
+        })
+      }
 
       if(isAlreadyLiked.deletedCount <= 0){
         await this.likeModel.create({
@@ -44,6 +65,11 @@ export class ActivityService {
           blogId: new Types.ObjectId(blogId)
         })
 
+        await this.notificationModel.deleteOne({
+          likedBy: authorId,
+          blogId
+        })
+        
         return true;
       }
       
@@ -295,6 +321,48 @@ export class ActivityService {
       }))
 
       return blogs;
+    } catch (error) {
+      if(error instanceof BadRequestException || error instanceof NotFoundException) throw error;
+
+      throw new InternalServerErrorException({
+        msg: 'Internal Server Error.',
+        code: 'INTERNAL_SERVER_ERROR',
+        error
+      })
+    }
+  }
+
+  async getNotifications(userId:string):Promise<TNotification[]>{
+    if(!isValidObjectId(userId)){
+      throw new BadRequestException({
+        msg: 'Invalid Author ID.',
+        code: 'INVALID_ID'
+      })
+    }
+
+    try {
+      let notificationsArr: TNotification[] = []
+
+      const notifications = await this.notificationModel.find({
+        author: userId
+      })
+
+      if(notifications.length <= 0) throw new NotFoundException({
+        msg: "No notification yet.",
+        code: 'NOT_FOUND'
+      })
+
+      await Promise.all(notifications.map(async notification => {
+        const blog = await this.blogModel.findById(notification.blogId)
+        const activityUser = await this.userModel.findById(notification.likedBy)
+        notificationsArr.push({
+          likedBy: activityUser?.username ?? '',
+          blog
+        })
+      }))
+      
+
+      return notificationsArr;
     } catch (error) {
       if(error instanceof BadRequestException || error instanceof NotFoundException) throw error;
 

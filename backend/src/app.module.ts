@@ -15,6 +15,7 @@ import { ActivityModule } from './modules/activity/activity.module';
 
 // Mongoose
 import { MongooseModule } from '@nestjs/mongoose';
+import { WsModule } from './web-socket/web-socket.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { MongooseModule } from '@nestjs/mongoose';
     ProfileModule,
     BlogModule,
     CommentModule,
-    ActivityModule
+    ActivityModule,
+    WsModule
   ],
   controllers: [AppController],
   providers: [AppService],

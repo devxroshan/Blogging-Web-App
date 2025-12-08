@@ -9,6 +9,7 @@ import { Like, LikeSchema } from './schema/like.schema';
 import { BlogModule } from '../blog/blog.module';
 import { Save, SaveSchema } from './schema/save.schema';
 import { Archive, ArchiveSchema } from './schema/archive.schema';
+import { Notification, NotificationSchema } from './schema/notification.schema';
 
 @Module({
   imports: [
@@ -28,6 +29,10 @@ import { Archive, ArchiveSchema } from './schema/archive.schema';
       {
         name: Archive.name,
         schema: ArchiveSchema
+      },
+      {
+        name: Notification.name,
+        schema: NotificationSchema
       }
     ])
   ],

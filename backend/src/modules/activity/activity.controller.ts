@@ -5,6 +5,7 @@ import { IsLoggedInGuard } from 'src/common/guards/isloggedin.guard';
 import { SuccessResponse } from 'src/common/utils/types';
 import { LikeDocument } from './schema/like.schema';
 import { BlogDocument } from '../blog/schema/blog.schema';
+import { TNotification } from './schema/notification.schema';
 
 @Controller('api/activity/')
 @UseGuards(IsLoggedInGuard)
@@ -79,6 +80,16 @@ export class ActivityController {
       ok: true,
       msg: 'All blogs archive by you.',
       data: blogs
+    }
+  }
+
+  @Get('notifications')
+  async GetNotifications(@Req() req:express.Request):Promise<SuccessResponse<TNotification[]>>{
+    const notifications = await this.activityService.getNotifications(req.user.id)
+    return {
+      ok: true,
+      msg: 'All blogs archive by you.',
+      data: notifications
     }
   }
 }
