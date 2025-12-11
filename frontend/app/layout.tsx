@@ -3,6 +3,10 @@ import "./globals.css";
 import { Poppins } from "next/font/google";
 
 import QueryWrapper from "./Wrapper/QueryWrapper";
+import AuthenticationChecker from "./Wrapper/AuthenticationChecker";
+
+// Components
+import Navbar from "./components/Navbar";
 
 export const poppins = Poppins({
   subsets: ["latin"],
@@ -22,7 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <QueryWrapper>
-        <body className={`antialiased ${poppins.className}`}>{children}</body>
+        <AuthenticationChecker>
+          <body className={`antialiased ${poppins.className}`}>
+            <Navbar/>
+            {children}
+          </body>
+        </AuthenticationChecker>
       </QueryWrapper>
     </html>
   );

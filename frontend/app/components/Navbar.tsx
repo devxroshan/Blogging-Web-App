@@ -3,10 +3,15 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 import Button, { ButtonVariant } from "./Button";
 
 const Navbar = () => {
+  const pathname = usePathname();
+
+  const hideOnPaths = ["/login", "/signup"];
+
   const navLinks = [
     {
       name: "Home",
@@ -46,50 +51,56 @@ const Navbar = () => {
   const [isNavOpened, setNavOpened] = useState<boolean>(false);
   const [isSettingMenu, setSettingMenu] = useState<boolean>(false);
 
-
-
   return (
-    <header className="w-screen">
-      <nav className="flex items-center justify-between w-screen h-14 shadow-md border border-b-primary-border px-3 py-1 select-none">
-        <div className="flex gap-4">
-          <Image
-            src={"/menu-icon.png"}
-            width={24}
-            height={24}
-            alt="Menu Icon"
-            className="cursor-pointer active:scale-90 hover:drop-shadow-sm transition-all duration-300 lg:hidden"
-            onClick={() => setNavOpened(true)}
-          />
-          <span className="font-extrabold text-xl">blogit.</span>
-        </div>
-
-        <div className="gap-4 items-center justify-center hidden lg:flex">
-          {navLinks.map((link) => (
-            <Link href={link.path} key={link.path} className="font-medium hover:-translate-y-0.5 transition-all duration-300 hover:text-shadow-lg">
-              {link.name}
-            </Link>
-          ))}
-        </div>
-
-        <div
-          className="flex items-center justify-start w-54 h-12 border border-primary-border rounded-lg shadow-sm px-2 gap-2 hover:bg-gray-200 cursor-pointer transition-all duration-300 select-none"
-          onClick={() => setSettingMenu(!isSettingMenu)}
-        >
-          <Image
-            src={"/test.png"}
-            width={35}
-            height={35}
-            alt="Profile Pic"
-            className="rounded-full"
-          />
-          <div className="flex flex-col items-start select-none">
-            <span className="font-semibold text-sm">Roshan Kewat</span>
-            <span className="font-medium text-gray-700 text-xs">
-              devxroshan
-            </span>
+    <>
+      <header
+        className={`w-screen ${hideOnPaths.includes(pathname) ? "hidden" : ""}`}
+      >
+        <nav className="flex items-center justify-between w-screen h-14 shadow-md border border-b-primary-border px-3 py-1 select-none">
+          <div className="flex gap-4">
+            <Image
+              src={"/menu-icon.png"}
+              width={24}
+              height={24}
+              alt="Menu Icon"
+              className="cursor-pointer active:scale-90 hover:drop-shadow-sm transition-all duration-300 lg:hidden"
+              onClick={() => setNavOpened(true)}
+            />
+            <span className="font-extrabold text-xl">blogit.</span>
           </div>
-        </div>
-      </nav>
+
+          <div className="gap-4 items-center justify-center hidden lg:flex">
+            {navLinks.map((link) => (
+              <Link
+                href={link.path}
+                key={link.path}
+                className="font-medium hover:-translate-y-0.5 transition-all duration-300 hover:text-shadow-lg"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+
+          <div
+            className="flex items-center justify-start w-54 h-12 border border-primary-border rounded-lg shadow-sm px-2 gap-2 hover:bg-gray-200 cursor-pointer transition-all duration-300 select-none"
+            onClick={() => setSettingMenu(!isSettingMenu)}
+          >
+            <Image
+              src={"/test.png"}
+              width={35}
+              height={35}
+              alt="Profile Pic"
+              className="rounded-full"
+            />
+            <div className="flex flex-col items-start select-none">
+              <span className="font-semibold text-sm">Roshan Kewat</span>
+              <span className="font-medium text-gray-700 text-xs">
+                devxroshan
+              </span>
+            </div>
+          </div>
+        </nav>
+      </header>
 
       {isNavOpened && (
         <div className="w-56 h-screen bg-white border border-r-primary-border fixed z-10 -mt-14 flex flex-col gap-4 items-center justify-start py-4 lg:hidden">
@@ -121,39 +132,41 @@ const Navbar = () => {
       )}
 
       {isSettingMenu && (
-        <div className="sticky rounded-xl shadow-lg ml-auto mr-2 w-56 h-96 flex bg-white border border-primary-border flex-col gap-4 px-3 py-3">
-          <div className="bg-white border border-primary-border w-full rounded-xl py-1.5 px-2 flex gap-2 items-center justify-start cursor-pointer hover:bg-gray-200 transition-all duration-300 shadow-sm">
-            <Image
-              src={"/test.png"}
-              width={40}
-              height={40}
-              alt="Profile Pic"
-              className="rounded-full"
-            />
+        <div className="w-full absolute">
+          <div className="rounded-xl ml-auto shadow-lg mr-2 w-56 h-96 flex bg-white border border-primary-border flex-col gap-4 px-3 py-3">
+            <div className="bg-white border border-primary-border w-full rounded-xl py-1.5 px-2 flex gap-2 items-center justify-start cursor-pointer hover:bg-gray-200 transition-all duration-300 shadow-sm">
+              <Image
+                src={"/test.png"}
+                width={40}
+                height={40}
+                alt="Profile Pic"
+                className="rounded-full"
+              />
 
-            <div className="flex flex-col items-start justify-start select-none">
-              <span className="font-medium text-sm">Roshan Kewat</span>
-              <span className="font-medium text-xs text-gray-800">
-                devxroshan
-              </span>
+              <div className="flex flex-col items-start justify-start select-none">
+                <span className="font-medium text-sm">Roshan Kewat</span>
+                <span className="font-medium text-xs text-gray-800">
+                  devxroshan
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className="flex w-full flex-col items-start justify-start gap-2">
-            {settingMenu.map((setting) => (
-              <button
-                key={setting.name}
-                className="py-2 hover:bg-gray-200 transition-all duration-300 w-full text-left px-3 rounded-xl cursor-pointer hover:font-medium hover:shadow-sm"
-              >
-                {setting.name}
-              </button>
-            ))}
-          </div>
+            <div className="flex w-full flex-col items-start justify-start gap-2">
+              {settingMenu.map((setting) => (
+                <button
+                  key={setting.name}
+                  className="py-2 hover:bg-gray-200 transition-all duration-300 w-full text-left px-3 rounded-xl cursor-pointer hover:font-medium hover:shadow-sm"
+                >
+                  {setting.name}
+                </button>
+              ))}
+            </div>
 
-          <Button variant={ButtonVariant.BlackPrimary}>Create</Button>
+            <Button variant={ButtonVariant.BlackPrimary}>Create</Button>
+          </div>
         </div>
       )}
-    </header>
+    </>
   );
 };
 

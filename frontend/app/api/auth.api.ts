@@ -19,4 +19,9 @@ export const SignUpAPI =async (signUpData:ISignUp) => {
     return await res.data
 }
 
+export const IsLoggedInAPI = async () => {
+    const res = await api.get(`auth/is-logged-in`)
+    return await res.data
+}
+
 

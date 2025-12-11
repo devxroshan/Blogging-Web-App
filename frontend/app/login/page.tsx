@@ -27,6 +27,7 @@ const Login = () => {
     onSuccess: (data) => {
       if(data.ok){
         router.push('/')
+        localStorage.setItem('isLoggedIn', 'OK')
       }
     },
     onError: (err) => {
