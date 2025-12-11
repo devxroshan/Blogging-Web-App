@@ -122,7 +122,11 @@ export class AuthService {
     loginAuthDto: LoginAuthDto,
   ): Promise<SuccessResponse<{ token: string }>> {
     try {
-      const user = await this.userModel.findOne({username: loginAuthDto.usernameOrEmail}) || await this.userModel.findOne({email: loginAuthDto.usernameOrEmail})
+      const user =
+        (await this.userModel.findOne({
+          username: loginAuthDto.usernameOrEmail,
+        })) ||
+        (await this.userModel.findOne({ email: loginAuthDto.usernameOrEmail }));
 
       if (!user) {
         throw new BadRequestException({
@@ -151,7 +155,7 @@ export class AuthService {
 
       const isPasswordValid = await argon.verify(
         user.password,
-        loginAuthDto.password
+        loginAuthDto.password,
       );
 
       if (!isPasswordValid) {
@@ -168,6 +172,27 @@ export class AuthService {
         msg: 'Login successful',
         data: { token },
       };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async isLoggedIn(
+    token: string,
+  ): Promise<boolean> {
+    if(!token){
+      return false;
+    }
+
+    try {
+      const decodedToken = await this.jwtService.verifyAsync(token, this.configService.get('JWT_SECRET'))
+
+      const isUser = await this.userModel.exists({_id: decodedToken.userId})
+      if(!isUser){
+        return false;
+      }
+
+      return true;
     } catch (error) {
       throw error;
     }

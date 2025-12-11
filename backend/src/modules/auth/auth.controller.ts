@@ -43,5 +43,15 @@ export class AuthController {
             msg: 'Login successful',
             data: this.configService.get<string>('NODE_ENV') === Environment.DEV ? response.data?.token : {},
         });
-    }  
+    }
+
+    @Get('is-logged-in')
+    async IsLoggedIn(@Req() req:express.Request):Promise<SuccessResponse<boolean>>{
+        const isLogin = await this.authService.isLoggedIn(req.cookies.accessToken)
+        return {
+            ok: true,
+            msg: isLogin?'Logged In':'Not Logged In',
+            data: isLogin
+        } 
+    }
 }
